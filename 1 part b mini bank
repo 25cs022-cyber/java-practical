@@ -1,0 +1,94 @@
+```java
+import java.util.Scanner;
+
+public class MiniBank {
+
+    // Record: Bank ni information store karva mate
+    record BankInfo(String name, String branch) {}
+
+    // Enum: Bank na menu options
+    enum MenuOption {
+        OPEN_ACCOUNT,
+        DEPOSIT,
+        WITHDRAW,
+        TRANSFER,
+        EXIT
+    }
+
+    public static void main(String[] args) {
+
+        Scanner sc = new Scanner(System.in);
+
+        // Bank information
+        BankInfo bank = new BankInfo("MiniBank", "Main Branch");
+
+        System.out.println("================================");
+        System.out.println("       Welcome to " + bank.name());
+        System.out.println("       Branch: " + bank.branch());
+        System.out.println("================================");
+
+        int choice;
+
+        // Menu loop
+        do {
+            System.out.println("\n========= MINIBANK MENU =========");
+            System.out.println("1. Open Account");
+            System.out.println("2. Deposit");
+            System.out.println("3. Withdraw");
+            System.out.println("4. Transfer");
+            System.out.println("5. Exit");
+            System.out.print("Enter your choice: ");
+
+            choice = sc.nextInt();
+
+            // Switch expression
+            if (choice < 1 || choice > 5) {
+                System.out.println("Invalid choice! Please enter 1 to 5.");
+                continue;
+            }
+
+            MenuOption option = switch (choice) {
+                case 1 -> MenuOption.OPEN_ACCOUNT;
+                case 2 -> MenuOption.DEPOSIT;
+                case 3 -> MenuOption.WITHDRAW;
+                case 4 -> MenuOption.TRANSFER;
+                case 5 -> MenuOption.EXIT;
+                default -> throw new IllegalStateException(
+                    "Unexpected choice: " + choice
+                );
+            };
+
+            // Selected option par action
+            switch (option) {
+                case OPEN_ACCOUNT ->
+                    System.out.println(
+                        "Open Account - to be implemented in a later lab"
+                    );
+
+                case DEPOSIT ->
+                    System.out.println(
+                        "Deposit - to be implemented in a later lab"
+                    );
+
+                case WITHDRAW ->
+                    System.out.println(
+                        "Withdraw - to be implemented in a later lab"
+                    );
+
+                case TRANSFER ->
+                    System.out.println(
+                        "Transfer - to be implemented in a later lab"
+                    );
+
+                case EXIT ->
+                    System.out.println(
+                        "Thank you for using MiniBank. Goodbye!"
+                    );
+            }
+
+        } while (choice != 5);
+
+        sc.close();
+    }
+}
+```
