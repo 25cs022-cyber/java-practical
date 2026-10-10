@@ -1,0 +1,88 @@
+```java
+public class CinemaShow {
+
+    private String title;
+    private int seatsAvailable;
+    private final int capacity;
+    private static int totalBooked = 0;
+
+    // Constructor 1
+    public CinemaShow(String title, int capacity) {
+        this.title = title;
+        this.capacity = capacity;
+        this.seatsAvailable = capacity;
+    }
+
+    // Constructor 2
+    public CinemaShow(String title) {
+        this(title, 100);
+    }
+
+    // Book tickets
+    public boolean book(int n) {
+        if (n > 0 && n <= seatsAvailable) {
+            seatsAvailable -= n;
+            totalBooked += n;
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    // Cancel tickets
+    public void cancel(int n) {
+        if (n > 0) {
+            seatsAvailable = Math.min(capacity, seatsAvailable + n);
+        }
+    }
+
+    // Getter method
+    public int getSeatsAvailable() {
+        return seatsAvailable;
+    }
+
+    // Static getter
+    public static int getTotalBooked() {
+        return totalBooked;
+    }
+
+    public static void main(String[] args) {
+
+        CinemaShow show = new CinemaShow("Avatar", 50);
+
+        System.out.println("Movie: " + show.title);
+        System.out.println("Available seats: "
+                + show.getSeatsAvailable());
+
+        boolean result;
+
+        result = show.book(20);
+        System.out.println("\nBook 20 tickets: " + result);
+        System.out.println("Available seats: "
+                + show.getSeatsAvailable());
+
+        result = show.book(25);
+        System.out.println("\nBook 25 tickets: " + result);
+        System.out.println("Available seats: "
+                + show.getSeatsAvailable());
+
+        result = show.book(10);
+        System.out.println("\nBook 10 tickets: " + result);
+        System.out.println("Available seats: "
+                + show.getSeatsAvailable());
+
+        show.cancel(5);
+        System.out.println("\nCancel 5 tickets");
+        System.out.println("Available seats: "
+                + show.getSeatsAvailable());
+
+        result = show.book(5);
+        System.out.println("\nBook 5 tickets: " + result);
+        System.out.println("Available seats: "
+                + show.getSeatsAvailable());
+
+        System.out.println("\nTotal booked tickets: "
+                + CinemaShow.getTotalBooked());
+    }
+}
+```
