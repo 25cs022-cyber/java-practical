@@ -1,0 +1,141 @@
+//account
+abstract class Account {
+    protected String accountNumber;
+    protected String accountHolder;
+    protected long balance;
+
+    Account(String accountNumber, String accountHolder, long balance) {
+        this.accountNumber = accountNumber;
+        this.accountHolder = accountHolder;
+        this.balance = balance;
+    }
+
+    abstract double interestRate();
+
+    abstract boolean canWithdraw(long amount);
+
+    public double monthlyInterest() {
+        return balance * (interestRate() / 100.0) / 12;
+    }
+
+    public String getAccountNumber() {
+        return accountNumber;
+    }
+
+    public String getAccountHolder() {
+        return accountHolder;
+    }
+
+    public long getBalance() {
+        return balance;
+    }
+}
+
+//savingsaccount
+
+class SavingsAccount extends Account {
+    private long minBalance;
+
+    SavingsAccount(String accountNumber, String accountHolder,
+                   long balance, long minBalance) {
+        super(accountNumber, accountHolder, balance);
+        this.minBalance = minBalance;
+    }
+
+    @Override
+    double interestRate() {
+        return 4.0;
+    }
+
+    @Override
+    boolean canWithdraw(long amount) {
+        return amount > 0 && balance - amount >= minBalance;
+    }
+}
+
+//currentaccount
+
+class CurrentAccount extends Account {
+    private long overdraftLimit;
+
+    CurrentAccount(String accountNumber, String accountHolder,
+                   long balance, long overdraftLimit) {
+        super(accountNumber, accountHolder, balance);
+        this.overdraftLimit = overdraftLimit;
+    }
+
+    @Override
+    double interestRate() {
+        return 0.0;
+    }
+
+    @Override
+    boolean canWithdraw(long amount) {
+        return amount > 0 && amount <= balance + overdraftLimit;
+    }
+}
+
+//fixeddeposit
+
+
+class FixedDepositAccount extends Account {
+
+    FixedDepositAccount(String accountNumber, String accountHolder,
+                        long balance) {
+        super(accountNumber, accountHolder, balance);
+    }
+
+    @Override
+    double interestRate() {
+        return 7.0;
+    }
+
+    @Override
+    boolean canWithdraw(long amount) {
+        return false;
+    }
+}
+
+
+//driver
+
+public class Driver {
+    public static void main(String[] args) {
+
+        Account[] accounts = {
+            new SavingsAccount("AC0001", "Riya", 20000, 5000),
+            new CurrentAccount("AC0002", "Amit", 10000, 5000),
+            new FixedDepositAccount("AC0003", "Neha", 50000)
+        };
+
+        for (Account account : accounts) {
+
+            System.out.println("Account Number: "
+                    + account.getAccountNumber());
+
+            System.out.println("Account Holder: "
+                    + account.getAccountHolder());
+
+            System.out.println("Balance: Rs. "
+                    + account.getBalance());
+
+            System.out.println("Interest Rate: "
+                    + account.interestRate() + "%");
+
+            System.out.printf("Monthly Interest: Rs. %.2f%n",
+                    account.monthlyInterest());
+
+            if (account instanceof SavingsAccount savings) {
+                System.out.println(
+                    "Type: Savings Account (Minimum balance rule applies)"
+                );
+                System.out.println(
+                    "Can withdraw Rs. 2000? "
+                    + savings.canWithdraw(2000)
+                );
+            }
+
+            System.out.println("---------------------------");
+        }
+    }
+}
