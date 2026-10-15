@@ -1,0 +1,53 @@
+```java
+@FunctionalInterface
+interface Notifier {
+    void send(String message);
+}
+
+// Marker interface
+interface Urgent {
+}
+
+public class NotificationDemo {
+    public static void main(String[] args) {
+
+        Notifier emailSender = (message) ->
+            System.out.println("Email: " + message);
+
+        Notifier smsSender = (message) ->
+            System.out.println("SMS: " + message);
+
+        // Urgent sender
+        class UrgentEmail implements Notifier, Urgent {
+            public void send(String message) {
+                System.out.println("URGENT EMAIL: " + message);
+            }
+        }
+
+        Notifier urgentSender = new UrgentEmail();
+
+        Notifier[] senders = {
+            emailSender,
+            smsSender,
+            urgentSender
+        };
+
+        String message = "Your assignment is due tomorrow!";
+
+        System.out.println("--- Normal Broadcast ---");
+
+        for (Notifier sender : senders) {
+            sender.send(message);
+        }
+
+        System.out.println("--- Urgent Senders (Twice) ---");
+
+        for (Notifier sender : senders) {
+            if (sender instanceof Urgent) {
+                sender.send(message);
+                sender.send(message);
+            }
+        }
+    }
+}
+```
