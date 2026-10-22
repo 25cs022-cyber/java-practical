@@ -1,0 +1,108 @@
+
+import java.lang.annotation.*;
+import java.lang.reflect.*;
+
+// Step 1: Create Column annotation
+@Retention(RetentionPolicy.RUNTIME)
+@Target(ElementType.FIELD)
+@interface Column {
+    String name();
+}
+
+// Step 2: Create Student class
+class Student {
+
+    @Column(name = "name")
+    String name;
+
+    @Column(name = "age")
+    int age;
+
+    @Column(name = "city")
+    String city;
+
+    void display() {
+        System.out.println("Name: " + name);
+        System.out.println("Age: " + age);
+        System.out.println("City: " + city);
+    }
+}
+
+// Step 3: Fill object using reflection
+class ColumnMapper {
+
+    static void populate(
+            Object obj,
+            String[] header,
+            String[] data) throws Exception {
+
+        Field[] fields =
+                obj.getClass().getDeclaredFields();
+
+        for (Field field : fields) {
+
+            if (!field.isAnnotationPresent(Column.class)) {
+                continue;
+            }
+
+            Column col = field.getAnnotation(Column.class);
+            String columnName = col.name();
+
+            int index = -1;
+
+            // Find matching column name
+            for (int i = 0; i < header.length; i++) {
+                if (header[i].trim().equals(columnName)) {
+                    index = i;
+                    break;
+                }
+            }
+
+            // Handle missing column
+            if (index == -1) {
+                System.out.println(
+                    "Missing column: " + columnName);
+                continue;
+            }
+
+            // Handle missing data
+            if (index >= data.length) {
+                System.out.println(
+                    "Missing data for: " + columnName);
+                continue;
+            }
+
+            String value = data[index].trim();
+
+            field.setAccessible(true);
+
+            // Convert value to the field's type
+            if (field.getType() == String.class) {
+                field.set(obj, value);
+
+            } else if (field.getType() == int.class) {
+                field.setInt(obj, Integer.parseInt(value));
+
+            } else if (field.getType() == double.class) {
+                field.setDouble(obj, Double.parseDouble(value));
+            }
+        }
+    }
+}
+
+// Step 4: Main class
+public class ColumnDemo {
+
+    public static void main(String[] args) throws Exception {
+
+        String[] header = {"city", "name", "age"};
+        String[] data = {"Ahmedabad", "Rahul", "20"};
+
+        Student s = new Student();
+
+        ColumnMapper.populate(s, header, data);
+
+        System.out.println("\nStudent Details:");
+        s.display();
+    }
+}
